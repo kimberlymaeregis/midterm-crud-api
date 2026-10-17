@@ -2,6 +2,7 @@
 import 'reflect-metadata'; // MUST be first import for TypeORM decorators!
 import express from 'express';
 import cors from 'cors';
+import {taskRoutes} from './routes/taskRoutes';
 import { AppDataSource } from './config/data-source';
 import { userRoutes } from './routes/userRoutes';
 import * as dotenv from 'dotenv';
@@ -9,11 +10,12 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api', taskRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -43,14 +45,14 @@ AppDataSource.initialize()
   .then(() => {
     console.log('✅ Database connected successfully!');
 
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`🩺 Health check: http://localhost:${PORT}/health`);
-      console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
-    });
-  })
+  //Routes
+  app.use('/api/users', userRoutes),
+
+  //Start Server
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  });
+})
   .catch((error) => {
     console.error('❌ Database connection failed:', error);
-    process.exit(1);
   });

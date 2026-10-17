@@ -1,7 +1,7 @@
 // src/controllers/userController.ts
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
-import { User } from '../entities/user';
+import { User } from '../entities/User';
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -40,8 +40,7 @@ export class UserController {
   // GET /api/users/:id - Get user by ID
   static async getById(req: Request, res: Response) {
     try {
-      const idParam = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-      const id = parseInt(idParam, 10);
+      const id = parseInt(req.params.id);
 
       if (isNaN(id)) {
         return res.status(400).json({
@@ -62,7 +61,8 @@ export class UserController {
           isActive: true,
           createdAt: true,
           updatedAt: true
-        }
+        },
+        relations: ['tasks'] // optional: load related tasks
       });
 
       if (!user) {
@@ -84,8 +84,8 @@ export class UserController {
       res.status(500).json({
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Failed to fetch user'
+          code: 'SERVER_ERROR',
+          message: 'An unexpected error occurred'
         }
       });
     }
@@ -117,12 +117,15 @@ export class UserController {
         });
       }
 
-      const newUser = userRepository.create({ name, email, password });
-      await userRepository.save(newUser);
+      const user = userRepository.create({ name, email, password });
+      const savedUser = await userRepository.save(user);
+
+      const { password: _, ...userWithoutPassword } = savedUser;
 
       res.status(201).json({
         success: true,
-        data: newUser
+        message: 'User created successfully',
+        data: userWithoutPassword
       });
     } catch (error) {
       console.error('Error creating user:', error);
@@ -136,11 +139,10 @@ export class UserController {
     }
   }
 
-  // PUT /api/users/:id – Update a user
+  // PUT /api/users/:id - Update a user
   static async update(req: Request, res: Response) {
     try {
-      const idParam = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-      const id = parseInt(idParam, 10);
+      const id = parseInt(req.params.id);
 
       if (isNaN(id)) {
         return res.status(400).json({
@@ -182,11 +184,12 @@ export class UserController {
       user.email = email ?? user.email;
       user.isActive = isActive ?? user.isActive;
 
-      await userRepository.save(user);
+      const updatedUser = await userRepository.save(user);
 
       res.json({
         success: true,
-        data: user
+        message: 'User updated successfully',
+        data: updatedUser
       });
     } catch (error) {
       console.error('Error updating user:', error);
@@ -203,8 +206,7 @@ export class UserController {
   // DELETE /api/users/:id - Delete a user
   static async delete(req: Request, res: Response) {
     try {
-      const idParam = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-      const id = parseInt(idParam, 10);
+      const id = parseInt(req.params.id);
 
       if (isNaN(id)) {
         return res.status(400).json({
@@ -229,9 +231,9 @@ export class UserController {
 
       await userRepository.remove(user);
 
-      res.status(200).json({
+      res.json({
         success: true,
-        message: 'User deleted successfully'
+        message: `User with ID ${id} deleted successfully`
       });
     } catch (error) {
       console.error('Error deleting user:', error);

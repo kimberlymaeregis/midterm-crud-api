@@ -1,38 +1,82 @@
-
 {
 
   "name": "midterm-crud-api",
+
   "version": "1.0.0",
+
   "description": "CRUD API with Express and TypeORM",
+
   "main": "dist/index.js",
-"scripts": {
-  "dev": "tsx watch src/index.ts",
-  "build": "tsc",
-  "start": "node dist/index.js"
-},
 
-  "keywords": ["express", "typeorm", "mysql", "crud"],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.2",
-    "mysql2": "^3.3.3",
-    "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20"
+  "scripts": {
+
+    "dev": "ts-node-dev --respawn src/index.ts",
+
+    "build": "tsc",
+
+    "start": "node dist/index.js",
+
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+
+    "migration:generate": "npm run typeorm -- migration:generate -d src/config/data-source.ts",
+
+    "migration:run": "npm run typeorm -- migration:run -d src/config/data-source.ts",
+
+    "migration:revert": "npm run typeorm -- migration:revert -d src/config/data-source.ts"
+
   },
+
+  "keywords": [
+
+    "express",
+
+    "typeorm",
+
+    "mysql",
+
+    "crud"
+
+  ],
+
+  "author": "",
+
+  "license": "ISC",
+
+  "type": "commonjs",
+
+  "dependencies": {
+
+    "cors": "^2.8.6",
+
+    "dotenv": "^16.4.5",
+
+    "express": "^4.21.2",
+
+    "mysql2": "^3.3.3",
+
+    "reflect-metadata": "^0.2.2",
+
+    "typeorm": "^0.3.20"
+
+  },
+
   "devDependencies": {
+
     "@types/cors": "^2.8.17",
+
     "@types/express": "^4.17.21",
+
     "@types/node": "^22.10.2",
+
     "ts-node": "^10.9.2",
+
     "ts-node-dev": "^2.0.0",
+
     "tsx": "^4.19.2",
+
     "typescript": "^5.9.3"
+
   }
+
 }
-
-
 

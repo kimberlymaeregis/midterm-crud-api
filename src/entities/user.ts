@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
-} from 'typeorm';
+  UpdateDateColumn,
+  OneToMany
+} from 'typeorm'; 
+import { Task } from './Task';
 
 @Entity('users')
 export class User {
@@ -21,8 +23,16 @@ export class User {
   @Column({ type: 'varchar', length: 255, select: false })
   password!: string;
 
+  
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phoneNumber!: string | null;
+
   @Column({ type: 'boolean', default: true })
   isActive!: boolean;
+
+  // One-to-Many Relationship: A user can have many tasks
+  @OneToMany(() => Task, task => task.user)
+  tasks!: Task[];
 
   @CreateDateColumn()
   createdAt!: Date;
