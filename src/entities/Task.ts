@@ -9,7 +9,7 @@ import {
     JoinColumn,
     Index
 } from 'typeorm';
-import { User } from './User';
+import { User } from './ser';
 
 @Entity('tasks')
 @Index(['userId'])

@@ -1,7 +1,7 @@
 // src/controllers/userController.ts
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
-import { User } from '../entities/User';
+import { User } from '../entities/ser';
 
 const userRepository = AppDataSource.getRepository(User);
 

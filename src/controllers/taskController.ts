@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source';
 import { Task } from '../entities/Task';
-import { User } from '../entities/User';
+import { User } from '../entities/ser';
 
 const taskRepository = AppDataSource.getRepository(Task);
 const userRepository = AppDataSource.getRepository(User);
